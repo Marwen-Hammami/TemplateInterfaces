@@ -3,7 +3,6 @@ package marwen.gameid.templateinterfaces
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,24 +21,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import marwen.gameid.templateinterfaces.ui.theme.TemplateInterfacesTheme
+import androidx.activity.viewModels
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        val viewModel: MainViewModel by viewModels()
         setContent {
-            AjouterALaListeUI()
+            AjouterALaListeUI(viewModel)
         }
     }
 }
 
 @Composable
-fun AjouterALaListeUI() {
+fun AjouterALaListeUI(viewModel: MainViewModel) {
     var texteSaisi by remember { mutableStateOf("") }
-    var listeElements by remember { mutableStateOf(listOf<String>()) }
     var erreur by remember { mutableStateOf("") }
 
     Column(modifier = Modifier
@@ -70,7 +68,7 @@ fun AjouterALaListeUI() {
                 if (texteSaisi.isBlank() || texteSaisi.length < 10) {
                     erreur = "L’élément doit contenir au moins 10 caractères"
                 } else {
-                    listeElements = listeElements + texteSaisi
+                    viewModel.ajouterElement(texteSaisi)
                     texteSaisi = ""
                     erreur = ""
                 }
@@ -84,7 +82,7 @@ fun AjouterALaListeUI() {
 
         // Affichage de la liste
         LazyColumn {
-            items(listeElements) { element ->
+            items(viewModel.listeElements) { element ->
                 Text(text = element, modifier = Modifier.padding(4.dp))
             }
         }
