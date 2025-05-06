@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import marwen.gameid.templateinterfaces.ui.theme.TemplateInterfacesTheme
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
 fun AjouterALaListeUI() {
     var texteSaisi by remember { mutableStateOf("") }
     var listeElements by remember { mutableStateOf(listOf<String>()) }
+    var erreur by remember { mutableStateOf("") }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -47,19 +49,30 @@ fun AjouterALaListeUI() {
         // Champ de saisie
         OutlinedTextField(
             value = texteSaisi,
-            onValueChange = { texteSaisi = it },
+            onValueChange = {
+                texteSaisi = it
+                erreur = "" // Réinitialiser le message d'erreur dès que l'utilisateur tape
+            },
             label = { Text("Entrez un élément") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = erreur.isNotEmpty()
         )
+
+        if (erreur.isNotEmpty()) {
+            Text(text = erreur, color = Color.Red)
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // Bouton Ajouter
         Button(
             onClick = {
-                if (texteSaisi.isNotBlank()) {
+                if (texteSaisi.isBlank() || texteSaisi.length < 10) {
+                    erreur = "L’élément doit contenir au moins 10 caractères"
+                } else {
                     listeElements = listeElements + texteSaisi
                     texteSaisi = ""
+                    erreur = ""
                 }
             },
             modifier = Modifier.fillMaxWidth()

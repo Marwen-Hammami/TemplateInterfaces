@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "marwen.gameid.templateinterfaces"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "marwen.gameid.templateinterfaces"
