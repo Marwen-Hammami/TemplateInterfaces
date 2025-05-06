@@ -1,4 +1,4 @@
-package marwen.gameid.templateinterfaces
+package marwen.gameid.templateinterfaces.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
