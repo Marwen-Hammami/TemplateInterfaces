@@ -4,13 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import marwen.gameid.templateinterfaces.ui.theme.TemplateInterfacesTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,30 +30,50 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TemplateInterfacesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            AjouterALaListeUI()
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun AjouterALaListeUI() {
+    var texteSaisi by remember { mutableStateOf("") }
+    var listeElements by remember { mutableStateOf(listOf<String>()) }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TemplateInterfacesTheme {
-        Greeting("Android")
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+
+        // Champ de saisie
+        OutlinedTextField(
+            value = texteSaisi,
+            onValueChange = { texteSaisi = it },
+            label = { Text("Entrez un élément") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Bouton Ajouter
+        Button(
+            onClick = {
+                if (texteSaisi.isNotBlank()) {
+                    listeElements = listeElements + texteSaisi
+                    texteSaisi = ""
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Ajouter")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Affichage de la liste
+        LazyColumn {
+            items(listeElements) { element ->
+                Text(text = element, modifier = Modifier.padding(4.dp))
+            }
+        }
     }
 }
